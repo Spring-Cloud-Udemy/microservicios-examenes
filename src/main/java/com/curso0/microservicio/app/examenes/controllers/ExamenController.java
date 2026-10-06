@@ -9,6 +9,8 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.GetMapping;
+
 
 import com.curso0.microservicio.commons.examenes.models.entity.Examen;
 import com.curso0.microservicio.app.examenes.services.ExamenService;
@@ -50,4 +52,17 @@ public class ExamenController extends CommonController<Examen,ExamenService>{
 		//Respuesta http de retorno y guardar la informacion
 		return ResponseEntity.status(HttpStatus.CREATED).body(service.save(examenDb));
 	}
+	@GetMapping("/filtrar/{term}")
+	public ResponseEntity<?> filtrar(@PathVariable String term ){
+		return ResponseEntity.ok(service.findByNombre(term));
+	}
+	
+	//Metodos de controller para hacer AsignaturaController independiente de ExamenService
+	
+	//listamos todas las asignaturas
+	@GetMapping("/asignaturas")
+	public ResponseEntity<?> listarAsignaturas(){
+		return ResponseEntity.ok(service.findAllAsignaturas());
+	}
+	
 } 
