@@ -4,6 +4,7 @@ import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -13,6 +14,9 @@ import org.springframework.web.bind.annotation.GetMapping;
 
 
 import com.curso0.microservicio.commons.examenes.models.entity.Examen;
+
+import jakarta.validation.Valid;
+
 import com.curso0.microservicio.app.examenes.services.ExamenService;
 import com.curso0.microservicio.app.spring_commons.controllers.CommonController;
 
@@ -21,8 +25,17 @@ import com.curso0.microservicio.app.spring_commons.controllers.CommonController;
 public class ExamenController extends CommonController<Examen,ExamenService>{
 
 	//Creamos el metodo put personalizado para el controller 
-	@PutMapping("/{id}")
-	public ResponseEntity<?> editar(@RequestBody Examen examen,@PathVariable Long id ){
+	@PutMapping("/{id}")													//El binding result siempre debe de ir despues de la entidad
+	public ResponseEntity<?> editar(@Valid @RequestBody Examen examen, BindingResult result,@PathVariable Long id ){
+		
+		//valida primero si aparece algun errores y si lo tiene lo envia al metodo validar que esta en commons controler 
+				if(result.hasErrors()) {
+				return this.validar(result);
+				}
+		
+		
+		
+		
 		//comparamos el id que nos dieron en el path url  y miramos si es igual al que tenemos 
 		Optional<Examen> o = service.findById(id);
 		//si el id guardado es diferente al que nos pasaron dar respuesta not found
