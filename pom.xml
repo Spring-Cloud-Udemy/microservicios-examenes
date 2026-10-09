@@ -72,6 +72,12 @@
 			
 		</dependency>
 		
+		<!--dependencias commonsUsuarios-->
+		<dependency>
+			<groupId>com.curso0.microservicios.app.commons-usuarios</groupId>
+				<artifactId>commons-usuarios</artifactId>
+			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
 		
 		
 		<dependency>
