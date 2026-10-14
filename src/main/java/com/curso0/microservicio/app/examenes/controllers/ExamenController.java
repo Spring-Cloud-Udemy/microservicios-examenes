@@ -1,5 +1,6 @@
 package com.curso0.microservicio.app.examenes.controllers;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.http.HttpStatus;
@@ -9,6 +10,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
 
@@ -23,6 +25,7 @@ import com.curso0.microservicio.app.spring_commons.controllers.CommonController;
 @RestController
 @RequestMapping("/examenes")
 public class ExamenController extends CommonController<Examen,ExamenService>{
+
 
 	//Creamos el metodo put personalizado para el controller 
 	@PutMapping("/{id}")													//El binding result siempre debe de ir despues de la entidad
@@ -77,5 +80,14 @@ public class ExamenController extends CommonController<Examen,ExamenService>{
 	public ResponseEntity<?> listarAsignaturas(){
 		return ResponseEntity.ok(service.findAllAsignaturas());
 	}
+	
+	
+	@GetMapping("/preguntas-respondidas")
+	public ResponseEntity<?> obtenerExamenesIdsPorPreguntaRespondidas(@RequestParam List<Long> preguntaIds){
+		return  ResponseEntity.ok().body(service.findExamenesIdsConRespuestasByPreguntaIds(preguntaIds));
+	}
+	
+	
+	
 	
 } 
