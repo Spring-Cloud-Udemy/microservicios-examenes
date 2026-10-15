@@ -83,10 +83,9 @@ public class ExamenController extends CommonController<Examen,ExamenService>{
 	
 	
 	@GetMapping("/preguntas-respondidas")
-	public ResponseEntity<?> obtenerExamenesIdsPorPreguntaRespondidas(@RequestParam List<Long> preguntaIds){
+	public ResponseEntity<?> obtenerExamenesIdsPorPreguntasIdRespondidas(@RequestParam List<Long> preguntaIds){
 		return  ResponseEntity.ok().body(service.findExamenesIdsConRespuestasByPreguntaIds(preguntaIds));
 	}
-	
 	
 	
 	

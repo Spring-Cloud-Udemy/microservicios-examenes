@@ -17,7 +17,6 @@ public interface ExamenService extends CommonService<Examen> {
 	
 	public Iterable<Asignatura> findAllAsignaturas();
 	
-	@Query("select e.id from Pregunta p  join fetch r.pregunta p join fetch p.examen e where r.alumnoId=?1 and e.id=?2")
 	public Iterable<Long> findExamenesIdsConRespuestasByPreguntaIds(Iterable<Long> preguntaIds);
 	
 	

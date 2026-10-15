@@ -41,6 +41,6 @@ public class ExamenServiceImpl extends CommonServiceImpl<Examen,ExamenRepository
 		return repository.findExamenesIdsConRespuestasByPreguntaIds(preguntaIds);
 	}
 
-
+	
 
 }
