@@ -5,4 +5,6 @@ import com.curso0.microservicio.commons.examenes.models.entity.Asignatura;
 
 public interface AsignaturaRepository extends JpaRepository<Asignatura,Long>{
 
+	Iterable<Asignatura> findAllByPadreIsNotNull();
+
 }

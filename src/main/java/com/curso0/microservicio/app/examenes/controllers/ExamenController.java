@@ -7,14 +7,17 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.DeleteMapping;
 
 
+import com.curso0.microservicio.commons.examenes.models.entity.Asignatura;
 import com.curso0.microservicio.commons.examenes.models.entity.Examen;
 
 import jakarta.validation.Valid;
@@ -50,6 +53,7 @@ public class ExamenController extends CommonController<Examen,ExamenService>{
 		Examen examenDb = o.get();
 		//le colocamos el nombre del examen que nos enviaron en el json
 		examenDb.setNombre(examen.getNombre());
+		examenDb.setAsignatura(examen.getAsignatura());
 		
 		//comparamos las preguntas que nos dieron con las guardadas 
 		//metodo para sacar las preguntas que nos envian de la lista y eliminarlas mediante el orphan
@@ -80,11 +84,59 @@ public class ExamenController extends CommonController<Examen,ExamenService>{
 	public ResponseEntity<?> listarAsignaturas(){
 		return ResponseEntity.ok(service.findAllAsignaturas());
 	}
+
+	@GetMapping("/asignaturas/{id}")
+	public ResponseEntity<?> verAsignatura(@PathVariable Long id) {
+		Optional<Asignatura> asignatura = service.findAsignaturaById(id);
+		if (asignatura.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+		return ResponseEntity.ok(asignatura.get());
+	}
+
+	@PostMapping("/asignaturas")
+	public ResponseEntity<?> crearAsignatura(@Valid @RequestBody Asignatura asignatura, BindingResult result) {
+		if (result.hasErrors()) {
+			return this.validar(result);
+		}
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.saveAsignatura(asignatura));
+	}
+
+	@PutMapping("/asignaturas/{id}")
+	public ResponseEntity<?> editarAsignatura(@Valid @RequestBody Asignatura asignatura, BindingResult result,
+			@PathVariable Long id) {
+		if (result.hasErrors()) {
+			return this.validar(result);
+		}
+
+		Optional<Asignatura> o = service.findAsignaturaById(id);
+		if (o.isEmpty()) {
+			return ResponseEntity.notFound().build();
+		}
+
+		Asignatura asignaturaDb = o.get();
+		asignaturaDb.setNombre(asignatura.getNombre());
+		asignaturaDb.setPadre(asignatura.getPadre());
+		return ResponseEntity.status(HttpStatus.CREATED).body(service.saveAsignatura(asignaturaDb));
+	}
 	
 	
 	@GetMapping("/preguntas-respondidas")
 	public ResponseEntity<?> obtenerExamenesIdsPorPreguntasIdRespondidas(@RequestParam List<Long> preguntaIds){
 		return  ResponseEntity.ok().body(service.findExamenesIdsConRespuestasByPreguntaIds(preguntaIds));
+	}
+
+	@GetMapping("/por-pregunta/{preguntaId}")
+	public ResponseEntity<?> obtenerExamenPorPregunta(@PathVariable Long preguntaId) {
+		return service.findExamenByPreguntaId(preguntaId)
+				.<ResponseEntity<?>>map(ResponseEntity::ok)
+				.orElseGet(() -> ResponseEntity.notFound().build());
+	}
+
+	@DeleteMapping("/asignaturas/{id}")
+	public ResponseEntity<Void> eliminarAsignatura(@PathVariable Long id) {
+		service.deleteAsignatura(id);
+		return ResponseEntity.noContent().build();
 	}
 	
 	
